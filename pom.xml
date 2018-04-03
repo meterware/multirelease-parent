@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
+
+    <groupId>com.meterware</groupId>
+    <artifactId>multirelease-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>MultiRelease Parent</name>
+    <description>A parent POM to simplify creation of multi-release jars</description>
+
+    <url>http://multirelease.meterware.com</url>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/meterware/multirelease-parent.git</url>
+        <developerConnection>scm:git:https://github.com/meterware/multirelease-parent.git</developerConnection>
+        <connection>scm:git:https://github.com/meterware/multirelease-parent.git</connection>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>russgold</id>
+            <name>Russell Gold</name>
+            <roles>
+                <role>lead</role>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/meterware/multirelease-parent/issues</url>
+    </issueManagement>
+
+    <properties>
+        <!-- The oldest Java version supported by this tool.               -->
+        <!-- Will control compilation of the main code and the unit tests. -->
+        <base.java.version>1.7</base.java.version>
+
+        <!-- the target for the Java 9 classes during development -->
+        <java9.build.outputDirectory>${project.build.outputDirectory}</java9.build.outputDirectory>
+
+        <!-- the target for the Java 10 classes during development -->
+        <java10.build.outputDirectory>${project.build.outputDirectory}</java10.build.outputDirectory>
+
+        <!-- the target for the Java 11 classes during development -->
+        <java11.build.outputDirectory>${project.build.outputDirectory}</java11.build.outputDirectory>
+
+        <!-- set the property when running from the release plugin -->
+        <arguments>-Dmulti_release=true</arguments>
+    </properties>
+
+    <build>
+        <plugins>
+
+            <!-- Use toolchains to select the compilers -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>${base.java.version}</version>
+                            <vendor>oracle</vendor>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+            </plugin>
+
+            <!-- define the possible compilations -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>${base.java.version}</source>
+                    <target>${base.java.version}</target>
+                </configuration>
+                <executions>
+                    <!-- for Java 9 -->
+                    <execution>
+                        <id>java9</id>
+                        <phase />
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <release>9</release>
+                            <jdkToolchain>
+                                <version>9</version>
+                            </jdkToolchain>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+                            </compileSourceRoots>
+                            <outputDirectory>${java9.build.outputDirectory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <!-- for Java 10 -->
+                    <execution>
+                        <id>java10</id>
+                        <phase />
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <release>10</release>
+                            <jdkToolchain>
+                                <version>10</version>
+                            </jdkToolchain>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${project.basedir}/src/main/java10</compileSourceRoot>
+                            </compileSourceRoots>
+                            <outputDirectory>${java10.build.outputDirectory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <!-- for Java 11 -->
+                    <execution>
+                        <id>java11</id>
+                        <phase />
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <release>11</release>
+                            <jdkToolchain>
+                                <version>11</version>
+                            </jdkToolchain>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${project.basedir}/src/main/java11</compileSourceRoot>
+                            </compileSourceRoots>
+                            <outputDirectory>${java11.build.outputDirectory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+
+        <!-- enable java9 compilation -->
+
+        <profile>
+            <id>compile-java9</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>java9</id>
+                                <phase>compile</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- enable java10 compilation -->
+
+        <profile>
+            <id>compile-java10</id>
+            <activation>
+                <jdk>[10,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>java10</id>
+                                <phase>compile</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- enable java11 compilation -->
+
+        <profile>
+            <id>compile-java11</id>
+            <activation>
+                <jdk>[11,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>java11</id>
+                                <phase>compile</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>test-toolchains-bypass</id>
+            <activation>
+                <property>
+                    <name>!multi_release</name>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <!-- Run the unit tests with the JVM used to run maven -->
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.21.0</version>
+                        <configuration>
+                            <jvm>${env.JAVA_HOME}/bin/java</jvm>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>multi-jar</id>
+            <activation>
+                <property>
+                    <name>multi_release</name>
+                </property>
+            </activation>
+
+            <properties>
+                <!-- compile the java9 code to its MR directory -->
+                <java9.build.outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</java9.build.outputDirectory>
+                <!-- compile the java10 code to its MR directory -->
+                <java10.build.outputDirectory>${project.build.outputDirectory}/META-INF/versions/10</java10.build.outputDirectory>
+                <!-- compile the java11 code to its MR directory -->
+                <java11.build.outputDirectory>${project.build.outputDirectory}/META-INF/versions/11</java11.build.outputDirectory>
+            </properties>
+
+            <build>
+                <plugins>
+
+                    <!-- enable java9 - java11 compilations -->
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>java9</id>
+                                <phase>compile</phase>
+                            </execution>
+                            <execution>
+                                <id>java10</id>
+                                <phase>compile</phase>
+                            </execution>
+                            <execution>
+                                <id>java11</id>
+                                <phase>compile</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- add the multi-release:true manifest entry -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>2.4</version>
+                        <configuration>
+                            <archive>
+                                <manifestEntries>
+                                    <Multi-Release>true</Multi-Release>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
+
