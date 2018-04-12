@@ -84,7 +84,6 @@
                     <toolchains>
                         <jdk>
                             <version>${base.java.version}</version>
-                            <vendor>oracle</vendor>
                         </jdk>
                     </toolchains>
                 </configuration>
@@ -103,7 +102,7 @@
                     <!-- for Java 9 -->
                     <execution>
                         <id>java9</id>
-                        <phase />
+                        <phase>none</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
@@ -121,7 +120,7 @@
                     <!-- for Java 10 -->
                     <execution>
                         <id>java10</id>
-                        <phase />
+                        <phase>none</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
@@ -139,7 +138,7 @@
                     <!-- for Java 11 -->
                     <execution>
                         <id>java11</id>
-                        <phase />
+                        <phase>none</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
