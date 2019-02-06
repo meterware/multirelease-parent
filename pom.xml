@@ -10,7 +10,7 @@
 
     <groupId>com.meterware</groupId>
     <artifactId>multirelease-parent</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <packaging>pom</packaging>
     <name>MultiRelease Parent</name>
     <description>A parent POM to simplify creation of multi-release jars</description>
@@ -147,6 +147,42 @@
                             <multiReleaseOutput>true</multiReleaseOutput>
                         </configuration>
                     </execution>
+                    <!-- for Java 12 -->
+                    <execution>
+                        <id>java12</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <release>12</release>
+                            <jdkToolchain>
+                                <version>12</version>
+                            </jdkToolchain>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${project.basedir}/src/main/java12</compileSourceRoot>
+                            </compileSourceRoots>
+                            <multiReleaseOutput>true</multiReleaseOutput>
+                        </configuration>
+                    </execution>
+                    <!-- for Java 13 -->
+                    <execution>
+                        <id>java13</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <release>13</release>
+                            <jdkToolchain>
+                                <version>13</version>
+                            </jdkToolchain>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${project.basedir}/src/main/java13</compileSourceRoot>
+                            </compileSourceRoots>
+                            <multiReleaseOutput>true</multiReleaseOutput>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
@@ -223,6 +259,52 @@
             </build>
         </profile>
 
+        <!-- enable java12 compilation -->
+
+        <profile>
+            <id>compile-java12</id>
+            <activation>
+                <jdk>[12,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>java12</id>
+                                <phase>compile</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- enable java13 compilation -->
+
+        <profile>
+            <id>compile-java13</id>
+            <activation>
+                <jdk>[13,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>java13</id>
+                                <phase>compile</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <profile>
             <id>test-toolchains-bypass</id>
             <activation>
@@ -256,7 +338,7 @@
             <build>
                 <plugins>
 
-                    <!-- enable java9 - java11 compilations -->
+                    <!-- enable java9 - java13 compilations -->
 
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -272,6 +354,14 @@
                             </execution>
                             <execution>
                                 <id>java11</id>
+                                <phase>compile</phase>
+                            </execution>
+                            <execution>
+                                <id>java12</id>
+                                <phase>compile</phase>
+                            </execution>
+                            <execution>
+                                <id>java13</id>
                                 <phase>compile</phase>
                             </execution>
                         </executions>
