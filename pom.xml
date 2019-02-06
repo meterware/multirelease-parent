@@ -52,14 +52,7 @@
         <!-- Will control compilation of the main code and the unit tests. -->
         <base.java.version>1.7</base.java.version>
 
-        <!-- the target for the Java 9 classes during development -->
-        <java9.build.outputDirectory>${project.build.outputDirectory}</java9.build.outputDirectory>
-
-        <!-- the target for the Java 10 classes during development -->
-        <java10.build.outputDirectory>${project.build.outputDirectory}</java10.build.outputDirectory>
-
-        <!-- the target for the Java 11 classes during development -->
-        <java11.build.outputDirectory>${project.build.outputDirectory}</java11.build.outputDirectory>
+        <toolchain.vendor>oracle</toolchain.vendor>
 
         <!-- set the property when running from the release plugin -->
         <arguments>-Dmulti_release=true</arguments>
@@ -84,6 +77,7 @@
                     <toolchains>
                         <jdk>
                             <version>${base.java.version}</version>
+                            <vendor>${toolchain.vendor}</vendor>
                         </jdk>
                     </toolchains>
                 </configuration>
@@ -93,7 +87,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.0</version>
                 <configuration>
                     <source>${base.java.version}</source>
                     <target>${base.java.version}</target>
@@ -114,7 +108,7 @@
                             <compileSourceRoots>
                                 <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
                             </compileSourceRoots>
-                            <outputDirectory>${java9.build.outputDirectory}</outputDirectory>
+                            <multiReleaseOutput>true</multiReleaseOutput>
                         </configuration>
                     </execution>
                     <!-- for Java 10 -->
@@ -132,7 +126,7 @@
                             <compileSourceRoots>
                                 <compileSourceRoot>${project.basedir}/src/main/java10</compileSourceRoot>
                             </compileSourceRoots>
-                            <outputDirectory>${java10.build.outputDirectory}</outputDirectory>
+                            <multiReleaseOutput>true</multiReleaseOutput>
                         </configuration>
                     </execution>
                     <!-- for Java 11 -->
@@ -150,7 +144,7 @@
                             <compileSourceRoots>
                                 <compileSourceRoot>${project.basedir}/src/main/java11</compileSourceRoot>
                             </compileSourceRoots>
-                            <outputDirectory>${java11.build.outputDirectory}</outputDirectory>
+                            <multiReleaseOutput>true</multiReleaseOutput>
                         </configuration>
                     </execution>
                 </executions>
@@ -258,15 +252,6 @@
                     <name>multi_release</name>
                 </property>
             </activation>
-
-            <properties>
-                <!-- compile the java9 code to its MR directory -->
-                <java9.build.outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</java9.build.outputDirectory>
-                <!-- compile the java10 code to its MR directory -->
-                <java10.build.outputDirectory>${project.build.outputDirectory}/META-INF/versions/10</java10.build.outputDirectory>
-                <!-- compile the java11 code to its MR directory -->
-                <java11.build.outputDirectory>${project.build.outputDirectory}/META-INF/versions/11</java11.build.outputDirectory>
-            </properties>
 
             <build>
                 <plugins>
